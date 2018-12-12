@@ -1,4 +1,5 @@
 import sys
+import time
 import dynet as dy
 import numpy as np
 
@@ -14,7 +15,7 @@ i2t = dict()
 EMBED_DIM = 100
 HIDDEN_DIM = 100
 HIDDEN_MLP_DIM = 100
-EPOCHS = 6
+EPOCHS = 3
 
 
 def generate_data(filename):
@@ -76,14 +77,16 @@ class LstmAcceptor(object):
         return result
 
 
-def train(train_data, acceptor):
+def train(train_data, test_data, acceptor):
     """
     training the acceptor lstm model by training data set,
     printing the average loss of the model per each epoch
     :param train_data: train data set
+    :param test_data: test data set
     :param acceptor: acceptor lstm model
     :return:
     """
+    start = time.time()
     for epoch in range(EPOCHS):
         sum_of_losses = 0.0
         for sequence, label in train_data:
@@ -94,33 +97,67 @@ def train(train_data, acceptor):
             sum_of_losses += loss.npvalue()  # summing this loss to overall loss
             loss.backward()  # computing the gradients of the model(backpropagation)
             acceptor.trainer.update()  # training step which updating the weights of the model
-        print('epoch: {}, average loss: {}'.format(epoch, sum_of_losses / len(tags_set)))
+        print('train results = epoch: {}, accuracy: {}%, average loss: {}'.format(epoch, compute_accuracy(train_data,
+                                                                                                          acceptor),
+                                                                                  sum_of_losses / len(train_data)))
+        evaluate(test_data, acceptor)
+    end = time.time()
+    print('total time of training: {}'.format(end - start))
 
 
-def predict(test_data, acceptor):
+def evaluate(test_data, acceptor):
     """
-    predicting the labels of each example in the test data and check it with the correct label,
-    printing the accuracy of the model on the test set
+    evaluating the accuracy and loss of each example in the test data
+    printing the accuracy and the average loss of the model on the test set
     :param test_data: test data set
     :param acceptor: acceptor lstm model
     :return:
     """
-    correct = 0
-    total = 0
+    sum_of_losses = 0.0
     for sequence, label in test_data:
         dy.renew_cg()  # new computation graph
-        # computing the predicting expression of the model on the sequence, that distributed by softmax
-        preds = dy.softmax(acceptor(sequence))
-        # computing the value of preds in computation graph
-        vals = preds.npvalue()
-        # if there is a match between predicted label and correct label increase the correct counter
-        if np.argmax(vals) == t2i[label]:
+        preds = acceptor(sequence)  # compute the predicted expression of the model on the sequence
+        # calculate negative cross entropy loss of the predicted expression which distributed by softmax
+        loss = dy.pickneglogsoftmax(preds, t2i[label])
+        sum_of_losses += loss.npvalue()  # summing this loss to overall loss
+        loss.backward()  # computing the gradients of the model(backpropagation)
+        acceptor.trainer.update()  # training step which updating the weights of the model
+    print('test results = accuracy: {}%, average loss: {}'.format(compute_accuracy(test_data, acceptor),
+                                                                  sum_of_losses / len(test_data)))
+
+
+def compute_accuracy(data, acceptor):
+    """
+    computing the accuracy of the model's predictions on the data
+    :param data: data to be predicted
+    :param acceptor: acceptor lstm model
+    :return: computed accuracy
+    """
+    correct = 0
+    for sequence, label in data:
+        predicted_label = predict(sequence, acceptor)
+        if predicted_label == label:
             correct += 1
-        total += 1
-    print('accuracy: {}%'.format(100 * (correct / total)))
+    return 100 * (correct / len(data))
+
+
+def predict(sequence, acceptor):
+    """
+    predicting the label of the sequence
+    :param sequence: sequence to be predicted
+    :param acceptor: acceptor lstm model
+    :return: predicted label
+    """
+    dy.renew_cg()  # new computation graph
+    # computing the predicting expression of the model on the sequence, that distributed by softmax
+    preds = dy.softmax(acceptor(sequence))
+    # computing the value of preds in computation graph
+    vals = preds.npvalue()
+    return i2t[np.argmax(vals)]
 
 
 def main(argv):
+    time.sleep(1)  # wait 1 sec for dy packages to be allocated and loaded to memory
     train_file_path = argv[0]
     test_file_path = argv[1]
     print('generating time...')
@@ -130,9 +167,7 @@ def main(argv):
     print('creating the model...')
     acceptor = LstmAcceptor()
     print('training time...')
-    train(train_data, acceptor)
-    print('prediction time...')
-    predict(test_data, acceptor)
+    train(train_data, test_data, acceptor)
 
 
 if __name__ == '__main__':
