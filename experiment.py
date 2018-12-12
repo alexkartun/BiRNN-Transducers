@@ -1,10 +1,11 @@
 import sys
 import time
+import random
 import dynet as dy
 import numpy as np
 
 # util sets and dicts
-characters_set = set()
+vocab_set = set()
 tags_set = set()
 c2i = dict()
 i2c = dict()
@@ -12,17 +13,17 @@ t2i = dict()
 i2t = dict()
 
 # globals of the model
-EMBED_DIM = 100
-HIDDEN_DIM = 100
-HIDDEN_MLP_DIM = 100
-EPOCHS = 3
+EMBED_DIM = 128
+HIDDEN_DIM = 50
+HIDDEN_MLP_DIM = 50
+EPOCHS = 2
 
 
 def generate_data(filename):
     """
-    generating from the data list of tuples, where each tuple is in form of (word, tag)
-    :param filename: file's name
-    :return: list of tuples
+    generating list of examples, where each example is tuple in format of (word, tag)
+    :param filename: file name of data set
+    :return: list of examples
     """
     data = []
     with open(filename, 'r') as f:
@@ -32,34 +33,34 @@ def generate_data(filename):
     return data
 
 
-def generate_sets(train_data):
+def generate_sets_and_dicts(train_data):
     """
-    generating character set and tag set from the train data,
+    generating vocabulary set and tag set from the train data,
     generating the util dictionaries for fast lookup of the the characters and tags to their specific index,
     and vise versa
-    :param train_data:
+    :param train_data: train data set
     :return:
     """
     global c2i, i2c, t2i, i2t
     for word, tag in train_data:
         for c in word:
-            characters_set.add(c)
+            vocab_set.add(c)
         tags_set.add(tag)
-    c2i = {c: i for i, c in enumerate(characters_set)}
+    c2i = {c: i for i, c in enumerate(vocab_set)}
     i2c = {i: c for c, i in c2i.items()}
     t2i = {c: i for i, c in enumerate(tags_set)}
     i2t = {i: c for c, i in t2i.items()}
 
 
-class LstmAcceptor(object):
+class LSTMAcceptor(object):
     """
-    Lstm acceptor model followed by MLP with one hidden layer
+    1 layer Lstm acceptor model followed by MLP with one hidden layer
     """
     def __init__(self):
         self.model = dy.Model()  # generate nn model
         self.trainer = dy.AdamTrainer(self.model)  # trainer of the model
         # embedding layer of the model
-        self.embeds = self.model.add_lookup_parameters((len(characters_set), EMBED_DIM))
+        self.embeds = self.model.add_lookup_parameters((len(vocab_set), EMBED_DIM))
         self.builder = dy.VanillaLSTMBuilder(1, EMBED_DIM, HIDDEN_DIM, self.model)  # lstm layer
         self.W1 = self.model.add_parameters((HIDDEN_MLP_DIM, HIDDEN_DIM))  # hidden layer of the mlp
         self.W2 = self.model.add_parameters((len(tags_set), HIDDEN_MLP_DIM))  # output layer of the mlp
@@ -77,18 +78,20 @@ class LstmAcceptor(object):
         return result
 
 
-def train(train_data, test_data, acceptor):
+def train(train_data, dev_data, acceptor):
     """
     training the acceptor lstm model by training data set,
-    printing the average loss of the model per each epoch
+    printing the average loss of the model per each epoch,
+    each epoch printing the average loss and accuracy of the model on dev data set
     :param train_data: train data set
-    :param test_data: test data set
+    :param dev_data: dev data set
     :param acceptor: acceptor lstm model
     :return:
     """
     start = time.time()
     for epoch in range(EPOCHS):
         sum_of_losses = 0.0
+        random.shuffle(train_data)
         for sequence, label in train_data:
             dy.renew_cg()  # new computation graph
             preds = acceptor(sequence)  # compute the predicted expression of the model on the sequence
@@ -100,21 +103,21 @@ def train(train_data, test_data, acceptor):
         print('train results = epoch: {}, accuracy: {}%, average loss: {}'.format(epoch, compute_accuracy(train_data,
                                                                                                           acceptor),
                                                                                   sum_of_losses / len(train_data)))
-        evaluate(test_data, acceptor)
+        evaluate(dev_data, acceptor)
     end = time.time()
     print('total time of training: {}'.format(end - start))
 
 
-def evaluate(test_data, acceptor):
+def evaluate(dev_data, acceptor):
     """
-    evaluating the accuracy and loss of each example in the test data
-    printing the accuracy and the average loss of the model on the test set
-    :param test_data: test data set
+    evaluating the accuracy and loss of each example in the dev data set
+    printing the accuracy and the average loss of the model on the dev data set
+    :param dev_data: dev data set
     :param acceptor: acceptor lstm model
     :return:
     """
     sum_of_losses = 0.0
-    for sequence, label in test_data:
+    for sequence, label in dev_data:
         dy.renew_cg()  # new computation graph
         preds = acceptor(sequence)  # compute the predicted expression of the model on the sequence
         # calculate negative cross entropy loss of the predicted expression which distributed by softmax
@@ -122,8 +125,8 @@ def evaluate(test_data, acceptor):
         sum_of_losses += loss.npvalue()  # summing this loss to overall loss
         loss.backward()  # computing the gradients of the model(backpropagation)
         acceptor.trainer.update()  # training step which updating the weights of the model
-    print('test results = accuracy: {}%, average loss: {}'.format(compute_accuracy(test_data, acceptor),
-                                                                  sum_of_losses / len(test_data)))
+    print('dev results = accuracy: {}%, average loss: {}'.format(compute_accuracy(dev_data, acceptor),
+                                                                  sum_of_losses / len(dev_data)))
 
 
 def compute_accuracy(data, acceptor):
@@ -159,15 +162,15 @@ def predict(sequence, acceptor):
 def main(argv):
     time.sleep(1)  # wait 1 sec for dy packages to be allocated and loaded to memory
     train_file_path = argv[0]
-    test_file_path = argv[1]
+    dev_file_path = argv[1]
     print('generating time...')
     train_data = generate_data(train_file_path)
-    test_data = generate_data(test_file_path)
-    generate_sets(train_data)
+    dev_data = generate_data(dev_file_path)
+    generate_sets_and_dicts(train_data)
     print('creating the model...')
-    acceptor = LstmAcceptor()
+    acceptor = LSTMAcceptor()
     print('training time...')
-    train(train_data, test_data, acceptor)
+    train(train_data, dev_data, acceptor)
 
 
 if __name__ == '__main__':

@@ -5,7 +5,7 @@ NUM_OF_DATA = 2000
 POS_FILE = "pos_examples"
 NEG_FILE = "neg_examples"
 TRAIN_FILE = "data/train"
-TEST_FILE = "data/test"
+TEST_FILE = "data/dev"
 
 
 def get_char_sequence(character):
