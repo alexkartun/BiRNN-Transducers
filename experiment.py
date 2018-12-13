@@ -57,25 +57,60 @@ class LSTMAcceptor(object):
     1 layer Lstm acceptor model followed by MLP with one hidden layer
     """
     def __init__(self):
-        self.model = dy.Model()  # generate nn model
+        self.model = dy.ParameterCollection()  # generate nn model
         self.trainer = dy.AdamTrainer(self.model)  # trainer of the model
-        # embedding layer of the model
-        self.embeds = self.model.add_lookup_parameters((len(vocab_set), EMBED_DIM))
-        self.builder = dy.VanillaLSTMBuilder(1, EMBED_DIM, HIDDEN_DIM, self.model)  # lstm layer
+        self.char_embeddings = self.model.add_lookup_parameters((len(c2i), EMBED_DIM))  # embedding layer of the model
+        self.builder = dy.LSTMBuilder(1, EMBED_DIM, HIDDEN_DIM, self.model)  # lstm layer
         self.W1 = self.model.add_parameters((HIDDEN_MLP_DIM, HIDDEN_DIM))  # hidden layer of the mlp
-        self.W2 = self.model.add_parameters((len(tags_set), HIDDEN_MLP_DIM))  # output layer of the mlp
+        self.W2 = self.model.add_parameters((len(t2i), HIDDEN_MLP_DIM))  # output layer of the mlp
 
-    def __call__(self, sequence):
-        lstm = self.builder.initial_state()  # reset the hidden states of the lstm acceptor
-        W1 = self.W1.expr()  # convert the parameter into an expression (add it to graph)
-        W2 = self.W2.expr()  # convert the parameter into an expression (add it to graph)
-        # first calculate the embedded vectors of the sequence and second send the vectors to the lstm acceptor
-        outputs = lstm.transduce([self.embeds[c2i[i]] for i in sequence])
-        # last state of the lstm output multiplied with hidden layer of mlp followed by activation 'tanh' function
-        outputs = dy.tanh(W1*outputs[-1])
-        # hidden layer's output multiplied by output layer of the mlp
-        result = W2*outputs
+    def build_graph(self, word):
+        """
+        building new computation graph with previous parameters and computing model's prediction on the word
+        :param word: word to be predicted by the model
+        :return: predicted result
+        """
+        dy.renew_cg()  # new computation graph
+        lstm = self.builder.initial_state()
+        char_embeddings = self.word_repr(word)
+        outputs = lstm.transduce(char_embeddings)
+        W1 = dy.parameter(self.W1)
+        W2 = dy.parameter(self.W2)
+        result = W2 * (dy.tanh(W1 * outputs[-1]))
         return result
+
+    def word_repr(self, word):
+        """
+        computing character-level embedding representation of the word
+        :param word: word to be embedded
+        :return: word embedding representation
+        """
+        char_indexes = [c2i[c] for c in word]
+        char_embeddings = [self.char_embeddings[i] for i in char_indexes]
+        return char_embeddings
+
+    def compute_word_loss(self, word, tag):
+        """
+        computing model's prediction and computing negative cross entropy loss of the predicted value and gold value
+        :param word: word to be predicted
+        :param tag: gold label
+        :return: error of the model on his predicted label
+        """
+        result = self.build_graph(word)
+        loss = dy.pickneglogsoftmax(result, t2i[tag])
+        return loss
+
+    def predict_word_tag(self, word):
+        """
+        predicting the label of the word by the computation graph, distributing the values by softmax
+        and finally taking the highest valued index as chosen predicted label
+        :param word: word to be predicted
+        :return: chosen label of the model
+        """
+        result = self.build_graph(word)
+        out = dy.softmax(result)
+        chosen = i2t[np.argmax(out.npvalue())]
+        return chosen
 
 
 def train(train_data, dev_data, acceptor):
@@ -92,11 +127,9 @@ def train(train_data, dev_data, acceptor):
     for epoch in range(EPOCHS):
         sum_of_losses = 0.0
         random.shuffle(train_data)
-        for sequence, label in train_data:
-            dy.renew_cg()  # new computation graph
-            preds = acceptor(sequence)  # compute the predicted expression of the model on the sequence
-            # calculate negative cross entropy loss of the predicted expression which distributed by softmax
-            loss = dy.pickneglogsoftmax(preds, t2i[label])
+        for word, tag in train_data:
+            # computing loss of the model on this word and gold tag
+            loss = acceptor.compute_word_loss(word, tag)
             sum_of_losses += loss.npvalue()  # summing this loss to overall loss
             loss.backward()  # computing the gradients of the model(backpropagation)
             acceptor.trainer.update()  # training step which updating the weights of the model
@@ -117,16 +150,13 @@ def evaluate(dev_data, acceptor):
     :return:
     """
     sum_of_losses = 0.0
-    for sequence, label in dev_data:
-        dy.renew_cg()  # new computation graph
-        preds = acceptor(sequence)  # compute the predicted expression of the model on the sequence
-        # calculate negative cross entropy loss of the predicted expression which distributed by softmax
-        loss = dy.pickneglogsoftmax(preds, t2i[label])
+    for word, tag in dev_data:
+        loss = acceptor.compute_word_loss(word, tag)  # computing loss of the model on this word and gold tag
         sum_of_losses += loss.npvalue()  # summing this loss to overall loss
         loss.backward()  # computing the gradients of the model(backpropagation)
         acceptor.trainer.update()  # training step which updating the weights of the model
     print('dev results = accuracy: {}%, average loss: {}'.format(compute_accuracy(dev_data, acceptor),
-                                                                  sum_of_losses / len(dev_data)))
+                                                                 sum_of_losses / len(dev_data)))
 
 
 def compute_accuracy(data, acceptor):
@@ -137,26 +167,11 @@ def compute_accuracy(data, acceptor):
     :return: computed accuracy
     """
     correct = 0
-    for sequence, label in data:
-        predicted_label = predict(sequence, acceptor)
-        if predicted_label == label:
+    for word, tag in data:
+        predicted_label = acceptor.predict_word_tag(word)
+        if predicted_label == tag:
             correct += 1
     return 100 * (correct / len(data))
-
-
-def predict(sequence, acceptor):
-    """
-    predicting the label of the sequence
-    :param sequence: sequence to be predicted
-    :param acceptor: acceptor lstm model
-    :return: predicted label
-    """
-    dy.renew_cg()  # new computation graph
-    # computing the predicting expression of the model on the sequence, that distributed by softmax
-    preds = dy.softmax(acceptor(sequence))
-    # computing the value of preds in computation graph
-    vals = preds.npvalue()
-    return i2t[np.argmax(vals)]
 
 
 def main(argv):

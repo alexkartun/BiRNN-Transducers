@@ -1,5 +1,6 @@
 # util sets and dicts
 UNK = '_UNK_'
+SUB_WORD_UNIT_SIZE = 3
 vocab_set = {UNK}
 tags_set = set()
 w2i = dict()
