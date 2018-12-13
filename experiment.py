@@ -16,7 +16,7 @@ i2t = dict()
 EMBED_DIM = 128
 HIDDEN_DIM = 50
 HIDDEN_MLP_DIM = 50
-EPOCHS = 2
+EPOCHS = 1
 
 
 def generate_data(filename):
