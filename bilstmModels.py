@@ -23,21 +23,20 @@ class FirstModel(object):
             dy.LSTMBuilder(1, 2 * HIDDEN_DIM, HIDDEN_DIM, self.model),
             dy.LSTMBuilder(1, 2 * HIDDEN_DIM, HIDDEN_DIM, self.model)
         ]
-        self.W = self.model.add_parameters((len(self.t2i), 2 * HIDDEN_DIM))
+        self.output = self.model.add_parameters((len(self.t2i), 2 * HIDDEN_DIM))
 
     def build_graph(self, sentence):
         dy.renew_cg()
         first_forward, first_backward = [b.initial_state() for b in self.first_builder]
         second_forward, second_backward = [b.initial_state() for b in self.second_builder]
         embeddings = [self.word_repr(word) for word in sentence]
-        print(embeddings[0].dim())
         first_forward_output = first_forward.transduce(embeddings)
         first_backward_output = first_backward.transduce(reversed(embeddings))
         b = [dy.concatenate([fo, bo]) for fo, bo in zip(first_forward_output, first_backward_output)]
         second_forward_output = second_forward.transduce(b)
         second_backward_output = second_backward.transduce(reversed(b))
         b_tag = [dy.concatenate([fo, bo]) for fo, bo in zip(second_forward_output, second_backward_output)]
-        result = [self.W*item for item in b_tag]
+        result = [self.output * item for item in b_tag]
         return result
 
     def word_repr(self, word):
@@ -58,7 +57,7 @@ class FirstModel(object):
         result = self.build_graph(sentence)
         for res in result:
             out = dy.softmax(res)
-            chosen = self.i2t[np.argmax(out.npvalue())]
+            chosen = self.i2t[np.argmax(out.value())]
             tags.append(chosen)
         return tags
 
@@ -83,8 +82,8 @@ class ThirdModel(FirstModel):
         super(ThirdModel, self).__init__(w2i, t2i, i2t)
         self.p2i = p2i
         self.s2i = s2i
-        self.prefix_embeddings = self.model.add_lookup_parameters(len(self.p2i), WORD_EMBED_DIM)
-        self.suffix_embeddings = self.model.add_lookup_parameters(len(self.s2i), WORD_EMBED_DIM)
+        self.prefix_embeddings = self.model.add_lookup_parameters((len(self.p2i), WORD_EMBED_DIM))
+        self.suffix_embeddings = self.model.add_lookup_parameters((len(self.s2i), WORD_EMBED_DIM))
 
     def word_repr(self, word):
         prefix = word[:ut.SUB_WORD_UNIT_SIZE]
@@ -103,11 +102,11 @@ class ThirdModel(FirstModel):
 class FourthModel(SecondModel):
     def __init__(self, w2i, t2i, i2t, c2i):
         super(FourthModel, self).__init__(w2i, t2i, i2t, c2i)
-        self.W = self.model.add_parameters((WORD_EMBED_DIM, HIDDEN_DIM * 2))
+        self.W = self.model.add_parameters((WORD_EMBED_DIM, 2 * WORD_EMBED_DIM))
 
     def word_repr(self, word):
         word_embeddings = FirstModel.word_repr(self, word)
         character_embeddings = SecondModel.word_repr(self, word)
         concat_embeddings = dy.concatenate([word_embeddings, character_embeddings])
-        result = self.W*concat_embeddings
+        result = self.W * concat_embeddings
         return result

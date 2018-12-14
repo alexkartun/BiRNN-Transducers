@@ -1,8 +1,6 @@
 import sys
 import time
 import random
-import dynet as dy
-import numpy as np
 import utils as ut
 import bilstmModels as bm
 
@@ -14,14 +12,14 @@ NUMBER_SENTENCES_CHECK_ACCURACY = 500
 def train(train_data, dev_data, model):
     start = time.time()
     for epoch in range(EPOCHS):
-        random.shuffle(train_data)
         sum_of_losses = 0.0
         tagged_words = 0.0
+        random.shuffle(train_data)
         for index, (sentence, tags) in enumerate(train_data, 1):
             if index % NUMBER_SENTENCES_CHECK_ACCURACY == 0:
                 evaluate(dev_data, model)
             sum_losses = model.compute_sentence_loss(sentence, tags)
-            sum_of_losses += sum_losses.scalar_value()
+            sum_of_losses += sum_losses.value()
             tagged_words += len(tags)
             sum_losses.backward()
             model.trainer.update()
@@ -35,7 +33,7 @@ def evaluate(dev_data, model):
     tagged_words = 0.0
     for sentence, tags in dev_data:
         sum_losses = model.compute_sentence_loss(sentence, tags)
-        sum_of_losses += sum_losses.scalar_value()
+        sum_of_losses += sum_losses.value()
         tagged_words += len(tags)
         sum_losses.backward()
         model.trainer.update()

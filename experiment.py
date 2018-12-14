@@ -74,9 +74,7 @@ class LSTMAcceptor(object):
         lstm = self.builder.initial_state()
         char_embeddings = self.word_repr(word)
         outputs = lstm.transduce(char_embeddings)
-        W1 = dy.parameter(self.W1)
-        W2 = dy.parameter(self.W2)
-        result = W2 * (dy.tanh(W1 * outputs[-1]))
+        result = self.W2 * (dy.tanh(self.W1 * outputs[-1]))
         return result
 
     def word_repr(self, word):
@@ -109,7 +107,7 @@ class LSTMAcceptor(object):
         """
         result = self.build_graph(word)
         out = dy.softmax(result)
-        chosen = i2t[np.argmax(out.npvalue())]
+        chosen = i2t[np.argmax(out.value())]
         return chosen
 
 
@@ -130,7 +128,7 @@ def train(train_data, dev_data, acceptor):
         for word, tag in train_data:
             # computing loss of the model on this word and gold tag
             loss = acceptor.compute_word_loss(word, tag)
-            sum_of_losses += loss.npvalue()  # summing this loss to overall loss
+            sum_of_losses += loss.value()  # summing this loss to overall loss
             loss.backward()  # computing the gradients of the model(backpropagation)
             acceptor.trainer.update()  # training step which updating the weights of the model
         print('train results = epoch: {}, accuracy: {}%, average loss: {}'.format(epoch, compute_accuracy(train_data,
@@ -152,7 +150,7 @@ def evaluate(dev_data, acceptor):
     sum_of_losses = 0.0
     for word, tag in dev_data:
         loss = acceptor.compute_word_loss(word, tag)  # computing loss of the model on this word and gold tag
-        sum_of_losses += loss.npvalue()  # summing this loss to overall loss
+        sum_of_losses += loss.value()  # summing this loss to overall loss
         loss.backward()  # computing the gradients of the model(backpropagation)
         acceptor.trainer.update()  # training step which updating the weights of the model
     print('dev results = accuracy: {}%, average loss: {}'.format(compute_accuracy(dev_data, acceptor),
