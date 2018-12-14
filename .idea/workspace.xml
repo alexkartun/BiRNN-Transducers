@@ -2,10 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="63218fc5-4822-4686-a070-02075bdf5436" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Kartun.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Kartun.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bilstmModels.py" beforeDir="false" afterPath="$PROJECT_DIR$/bilstmModels.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bilstmTrain.py" beforeDir="false" afterPath="$PROJECT_DIR$/bilstmTrain.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dev" beforeDir="false" afterPath="$PROJECT_DIR$/data/dev" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/train" beforeDir="false" afterPath="$PROJECT_DIR$/data/train" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/neg_examples" beforeDir="false" afterPath="$PROJECT_DIR$/neg_examples" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pos_examples" beforeDir="false" afterPath="$PROJECT_DIR$/pos_examples" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,8 +22,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/experiment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="96">
-              <caret line="152" column="35" selection-start-line="152" selection-start-column="35" selection-end-line="152" selection-end-column="35" />
+            <state relative-caret-position="385">
+              <caret line="79" column="21" lean-forward="true" selection-start-line="79" selection-start-column="21" selection-end-line="79" selection-end-column="21" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -30,8 +34,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bilstmTrain.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-30">
-              <caret line="23" column="33" lean-forward="true" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
+            <state relative-caret-position="133">
+              <caret line="36" column="33" lean-forward="true" selection-start-line="36" selection-start-column="33" selection-end-line="36" selection-end-column="33" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -42,8 +46,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bilstmModels.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-442">
-              <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
+            <state relative-caret-position="391">
+              <caret line="108" lean-forward="true" selection-start-line="108" selection-end-line="108" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -90,8 +94,8 @@
         <option value="$PROJECT_DIR$/gen_examples.py" />
         <option value="$PROJECT_DIR$/README.acceptor.txt" />
         <option value="$PROJECT_DIR$/utils.py" />
-        <option value="$PROJECT_DIR$/experiment.py" />
         <option value="$PROJECT_DIR$/bilstmTrain.py" />
+        <option value="$PROJECT_DIR$/experiment.py" />
         <option value="$PROJECT_DIR$/bilstmModels.py" />
       </list>
     </option>
@@ -217,8 +221,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.bilstmTrain" />
-        <item itemvalue="Python.experiment" />
         <item itemvalue="Python.gen_examples" />
+        <item itemvalue="Python.experiment" />
       </list>
     </recent_temporary>
   </component>
@@ -275,7 +279,14 @@
       <option name="project" value="LOCAL" />
       <updated>1544727270477</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="3 part in progress">
+      <created>1544793119651</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1544793119651</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -376,8 +387,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bilstmTrain.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-30">
-          <caret line="23" column="33" lean-forward="true" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
+        <state relative-caret-position="133">
+          <caret line="36" column="33" lean-forward="true" selection-start-line="36" selection-start-column="33" selection-end-line="36" selection-end-column="33" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
@@ -386,8 +397,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/experiment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="152" column="35" selection-start-line="152" selection-start-column="35" selection-end-line="152" selection-end-column="35" />
+        <state relative-caret-position="385">
+          <caret line="79" column="21" lean-forward="true" selection-start-line="79" selection-start-column="21" selection-end-line="79" selection-end-column="21" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
@@ -396,8 +407,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bilstmModels.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-442">
-          <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
+        <state relative-caret-position="391">
+          <caret line="108" lean-forward="true" selection-start-line="108" selection-end-line="108" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

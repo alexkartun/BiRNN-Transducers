@@ -5,6 +5,7 @@ import numpy as np
 WORD_EMBED_DIM = 128
 HIDDEN_DIM = 50
 CHAR_EMBEDDING_DIM = 16
+SUBWORD_EMBEDDING_DIM = 128
 
 
 class FirstModel(object):
@@ -24,6 +25,7 @@ class FirstModel(object):
             dy.LSTMBuilder(1, 2 * HIDDEN_DIM, HIDDEN_DIM, self.model)
         ]
         self.output = self.model.add_parameters((len(self.t2i), 2 * HIDDEN_DIM))
+        self.bias = self.model.add_parameters(len(self.t2i))
 
     def build_graph(self, sentence):
         dy.renew_cg()
@@ -36,7 +38,7 @@ class FirstModel(object):
         second_forward_output = second_forward.transduce(b)
         second_backward_output = second_backward.transduce(reversed(b))
         b_tag = [dy.concatenate([fo, bo]) for fo, bo in zip(second_forward_output, second_backward_output)]
-        result = [self.output * item for item in b_tag]
+        result = [self.output * item + self.bias for item in b_tag]
         return result
 
     def word_repr(self, word):
@@ -82,8 +84,8 @@ class ThirdModel(FirstModel):
         super(ThirdModel, self).__init__(w2i, t2i, i2t)
         self.p2i = p2i
         self.s2i = s2i
-        self.prefix_embeddings = self.model.add_lookup_parameters((len(self.p2i), WORD_EMBED_DIM))
-        self.suffix_embeddings = self.model.add_lookup_parameters((len(self.s2i), WORD_EMBED_DIM))
+        self.prefix_embeddings = self.model.add_lookup_parameters((len(self.p2i), SUBWORD_EMBEDDING_DIM))
+        self.suffix_embeddings = self.model.add_lookup_parameters((len(self.s2i), SUBWORD_EMBEDDING_DIM))
 
     def word_repr(self, word):
         prefix = word[:ut.SUB_WORD_UNIT_SIZE]
@@ -103,10 +105,11 @@ class FourthModel(SecondModel):
     def __init__(self, w2i, t2i, i2t, c2i):
         super(FourthModel, self).__init__(w2i, t2i, i2t, c2i)
         self.W = self.model.add_parameters((WORD_EMBED_DIM, 2 * WORD_EMBED_DIM))
+        self.b = self.model.add_parameters(WORD_EMBED_DIM)
 
     def word_repr(self, word):
         word_embeddings = FirstModel.word_repr(self, word)
         character_embeddings = SecondModel.word_repr(self, word)
         concat_embeddings = dy.concatenate([word_embeddings, character_embeddings])
-        result = self.W * concat_embeddings
+        result = self.W * concat_embeddings + self.b
         return result

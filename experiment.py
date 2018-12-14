@@ -62,7 +62,9 @@ class LSTMAcceptor(object):
         self.char_embeddings = self.model.add_lookup_parameters((len(c2i), EMBED_DIM))  # embedding layer of the model
         self.builder = dy.LSTMBuilder(1, EMBED_DIM, HIDDEN_DIM, self.model)  # lstm layer
         self.W1 = self.model.add_parameters((HIDDEN_MLP_DIM, HIDDEN_DIM))  # hidden layer of the mlp
+        self.b1 = self.model.add_parameters(HIDDEN_MLP_DIM)
         self.W2 = self.model.add_parameters((len(t2i), HIDDEN_MLP_DIM))  # output layer of the mlp
+        self.b2 = self.model.add_parameters(len(t2i))
 
     def build_graph(self, word):
         """
@@ -74,7 +76,7 @@ class LSTMAcceptor(object):
         lstm = self.builder.initial_state()
         char_embeddings = self.word_repr(word)
         outputs = lstm.transduce(char_embeddings)
-        result = self.W2 * (dy.tanh(self.W1 * outputs[-1]))
+        result = self.W2 * (dy.tanh(self.W1 * outputs[-1] + self.b1)) + self.b2
         return result
 
     def word_repr(self, word):
