@@ -1,5 +1,8 @@
 import random
 
+STUDENT = {'name': 'Alex Kartun_Ofir Sharon',
+           'ID': '324429216_204717664'}
+
 NUM_OF_EXAMPLES = 500
 NUM_OF_DATA = 2000
 POS_FILE = "pos_examples"

@@ -19,19 +19,19 @@ def generate_validation_data(filename):
     """
     generating list of sentences where each sentence combined of examples/words to be tagged
     :param filename: file name of test data set
-    :return: list of sentences
+    :return: blind data
     """
-    data = []
+    blind_data = []
     sentence = []
     with open(filename, 'r') as f:
         for line in f.readlines():
             if not line.strip():
-                data.append(sentence)
+                blind_data.append(sentence)
                 sentence = []
                 continue
             word = line.strip()
             sentence.append(word)
-    return data
+    return blind_data
 
 
 def generate_input_data(filename):
@@ -80,3 +80,32 @@ def generate_sets_and_dicts(train_data):
     suffixes = {word[-SUB_WORD_UNIT_SIZE:] for word in vocab_set}
     p2i = {w: i for i, w in enumerate(prefixes)}
     s2i = {w: i for i, w in enumerate(suffixes)}
+
+
+def split_data(data, percent):
+    """
+    split train data to train data and dev data depends on the percent
+    :param data: data to split
+    :param percent: percent which we will split the data
+    :return: train data and dev data
+    """
+    train_size = int(len(data) * percent)
+    dev_size = int(len(data) * (1 - percent))
+    return data[:train_size], data[-dev_size:]
+
+
+def output_predicted_tags(predicted_tags, blind_data, output_filename):
+    """
+    writing the predicted tags to prediction file, the format is: word<space>pred_tag
+    :param output_filename: output file name
+    :param blind_data: blind data set
+    :param predicted_tags: predicted tags
+    :return:
+    """
+    output = []
+    for sentence, sentence_predicted_tags in zip(blind_data, predicted_tags):
+        for word, predicted_tag in zip(sentence, sentence_predicted_tags):
+            output.append('{} {}'.format(word, predicted_tag))
+        output.append(' ')
+    with open(output_filename, 'w') as file:
+        file.write('\n'.join(output))

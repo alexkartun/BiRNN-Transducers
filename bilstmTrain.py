@@ -1,8 +1,11 @@
+import os
 import sys
 import time
 import random
 import utils as ut
 import bilstmModels as bm
+import pickle
+from zipfile import ZipFile
 
 STUDENT = {'name': 'Alex Kartun_Ofir Sharon',
            'ID': '324429216_204717664'}
@@ -10,6 +13,8 @@ STUDENT = {'name': 'Alex Kartun_Ofir Sharon',
 # globals of the model
 EPOCHS = 5
 NUMBER_SENTENCES_CHECK_ACCURACY = 500
+TRAIN_SIZE = 10000
+PERCENT_FOR_SPLITTING = 0.8
 
 
 def train(train_data, dev_data, model):
@@ -34,7 +39,7 @@ def train(train_data, dev_data, model):
             tagged_words += len(tags)
             sum_losses.backward()
             model.trainer.update()
-        print('train results = epoch: {}, average loss: {}'.format(epoch, sum_of_losses / tagged_words))
+        print('train results = epoch: {}, average loss: {}'.format(epoch + 1, sum_of_losses / tagged_words))
     end = time.time()
     print('total time of training: {}'.format(end - start))
 
@@ -75,20 +80,63 @@ def create_model(word_representation):
         return bm.FourthModel(ut.w2i, ut.t2i, ut.i2t, ut.c2i)
 
 
+def save_dictionaries():
+    """
+    saving the dictionaries to pickle dump file
+    :return:
+    """
+    with open('data.pkl', 'wb') as output:
+        pickle.dump(ut.w2i, output, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(ut.t2i, output, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(ut.i2t, output, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(ut.c2i, output, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(ut.p2i, output, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(ut.s2i, output, pickle.HIGHEST_PROTOCOL)
+
+
+def save_model(model):
+    """
+    saving the model
+    :param model: model data to be saved
+    :return:
+    """
+    model.model.save('model')
+
+
+def save(model, model_file_path):
+    """
+    saving all the model data to the zip file
+    :param model: model to be saved
+    :param model_file_path: model file path
+    :return:
+    """
+    save_dictionaries()
+    save_model(model)
+    with ZipFile(model_file_path, "w") as zip_file:
+        zip_file.write("data.pkl")
+        zip_file.write("model")
+    os.remove("data.pkl")
+    os.remove("model")
+
+
 def main(argv):
     time.sleep(1)  # wait 1 sec for dy packages to be allocated and loaded to memory
     word_representation = argv[0]
-    train_file_path = argv[1]
-    dev_file_path = argv[2]
-    # model_file_path = argv[3]
+    train_filename = argv[1]
+    model_filename = argv[2]
+    type_of_data_set = argv[3]
+    train_file_path = '{}/{}'.format(type_of_data_set, train_filename)
+    model_file_path = '{}/{}_{}'.format(type_of_data_set, word_representation, model_filename)
     print('generating the data...')
-    train_data = ut.generate_input_data(train_file_path)
-    ut.generate_sets_and_dicts(train_data)
-    dev_data = ut.generate_input_data(dev_file_path)
+    data = ut.generate_input_data(train_file_path)[:TRAIN_SIZE]
+    ut.generate_sets_and_dicts(data)
+    train_data, dev_data = ut.split_data(data, PERCENT_FOR_SPLITTING)
     print('creating the model...')
     model = create_model(word_representation)
     print('training...')
     train(train_data, dev_data, model)
+    print('saving the model...')
+    save(model, model_file_path)
 
 
 if __name__ == '__main__':

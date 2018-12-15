@@ -138,7 +138,7 @@ def train(train_data, dev_data, model):
             sum_of_losses += loss.value()  # summing this loss to overall loss
             loss.backward()  # computing the gradients of the model(backpropagation)
             model.trainer.update()  # training step which updating the weights of the model
-        print('train results = epoch: {}, average loss: {}'.format(epoch, sum_of_losses / len(train_data)))
+        print('train results = epoch: {}, average loss: {}'.format(epoch + 1, sum_of_losses / len(train_data)))
     end = time.time()
     print('total time of training: {}'.format(end - start))
 
@@ -160,8 +160,11 @@ def compute_accuracy(data, model):
 
 def main(argv):
     time.sleep(1)  # wait 1 sec for dy packages to be allocated and loaded to memory
-    train_file_path = argv[0]
-    dev_file_path = argv[1]
+    train_filename = argv[0]
+    dev_filename = argv[1]
+    type_of_data_set = argv[2]
+    train_file_path = '{}/{}'.format(type_of_data_set, train_filename)
+    dev_file_path = '{}/{}'.format(type_of_data_set, dev_filename)
     print('generating the data...')
     train_data = generate_data(train_file_path)
     generate_sets_and_dicts(train_data)
