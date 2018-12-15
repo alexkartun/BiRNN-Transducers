@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="63218fc5-4822-4686-a070-02075bdf5436" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/README.bilstm.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.acceptor.txt" beforeDir="false" afterPath="$PROJECT_DIR$/README.acceptor.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,56 +12,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/experiment.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="54">
-              <caret line="164" column="20" selection-start-line="164" selection-start-column="4" selection-end-line="164" selection-end-column="20" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.acceptor.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="30" lean-forward="true" selection-start-column="30" selection-end-column="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bilstmTrain.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="292">
-              <caret line="139" lean-forward="true" selection-start-line="139" selection-end-line="139" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bilstmTag.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="98" column="34" lean-forward="true" selection-start-line="98" selection-start-column="34" selection-end-line="98" selection-end-column="34" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/README.bilstm.txt">
+        <entry file="file://$PROJECT_DIR$/gen_m_power3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="30" column="14" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
+            <state relative-caret-position="1275">
+              <caret line="75" selection-start-line="75" selection-end-line="75" />
             </state>
           </provider>
         </entry>
@@ -101,8 +54,11 @@
         <option value="$PROJECT_DIR$/bilstmTag.py" />
         <option value="$PROJECT_DIR$/bilstmTrain.py" />
         <option value="$PROJECT_DIR$/experiment.py" />
-        <option value="$PROJECT_DIR$/README.acceptor.txt" />
         <option value="$PROJECT_DIR$/README.bilstm.txt" />
+        <option value="$PROJECT_DIR$/README.acceptor.txt" />
+        <option value="$PROJECT_DIR$/gen_mul3_lang.py" />
+        <option value="$PROJECT_DIR$/gen_cross_lang.py" />
+        <option value="$PROJECT_DIR$/gen_m_power3.py" />
       </list>
     </option>
   </component>
@@ -150,7 +106,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.bilstmTag">
+  <component name="RunManager" selected="Python.experiment">
     <configuration name="bilstmTag" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="ass3" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -172,27 +128,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="bilstmTrain" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true">
-      <module name="ass3" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bilstmTrain.py" />
-      <option name="PARAMETERS" value="a train model pos" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="experiment" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="ass3" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -206,7 +141,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/experiment.py" />
-      <option name="PARAMETERS" value="train dev data" />
+      <option name="PARAMETERS" value="m_power3_train m_power3_dev data" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -214,7 +149,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="gen_examples" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="gen_cross_lang" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="ass3" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -226,7 +161,49 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gen_examples.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gen_cross_lang.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="gen_m_power3" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="ass3" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gen_m_power3.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="gen_mul3_lang" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="ass3" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gen_mul3_lang.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -237,16 +214,18 @@
     </configuration>
     <list>
       <item itemvalue="Python.experiment" />
-      <item itemvalue="Python.gen_examples" />
-      <item itemvalue="Python.bilstmTrain" />
       <item itemvalue="Python.bilstmTag" />
+      <item itemvalue="Python.gen_mul3_lang" />
+      <item itemvalue="Python.gen_cross_lang" />
+      <item itemvalue="Python.gen_m_power3" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.experiment" />
+        <item itemvalue="Python.gen_m_power3" />
+        <item itemvalue="Python.gen_cross_lang" />
+        <item itemvalue="Python.gen_mul3_lang" />
         <item itemvalue="Python.bilstmTag" />
-        <item itemvalue="Python.bilstmTrain" />
-        <item itemvalue="Python.gen_examples" />
       </list>
     </recent_temporary>
   </component>
@@ -331,12 +310,18 @@
       <option name="project" value="LOCAL" />
       <updated>1544908557776</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="adding readme files and comments">
+      <created>1544909263789</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1544909263789</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -364,7 +349,8 @@
     <MESSAGE value="3 part in progress" />
     <MESSAGE value="3 part almost done" />
     <MESSAGE value="3rd part done!" />
-    <option name="LAST_COMMIT_MESSAGE" value="3rd part done!" />
+    <MESSAGE value="adding readme files and comments" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding readme files and comments" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/Desktop/utils.py" />
@@ -411,13 +397,6 @@
     <entry file="file://$USER_HOME$/Downloads/gen_cross_lang.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/gen_examples.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bilstmModels.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1377">
@@ -450,16 +429,6 @@
     <entry file="file://$PROJECT_DIR$/pos/a">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/experiment.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="164" column="20" selection-start-line="164" selection-start-column="4" selection-end-line="164" selection-end-column="20" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bilstmTrain.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="292">
@@ -482,15 +451,53 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/README.acceptor.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="30" lean-forward="true" selection-start-column="30" selection-end-column="30" />
+        <state relative-caret-position="204">
+          <caret line="12" column="54" lean-forward="true" selection-start-line="12" selection-start-column="54" selection-end-line="12" selection-end-column="54" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.bilstm.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="30" column="14" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
+        <state relative-caret-position="136">
+          <caret line="8" column="37" lean-forward="true" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/experiment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="167" column="35" lean-forward="true" selection-start-line="167" selection-start-column="35" selection-end-line="167" selection-end-column="35" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gen_cross_lang.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="80" lean-forward="true" selection-start-line="80" selection-end-line="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gen_examples.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gen_mul3_lang.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1428">
+          <caret line="84" lean-forward="true" selection-start-line="84" selection-end-line="84" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gen_m_power3.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1275">
+          <caret line="75" selection-start-line="75" selection-end-line="75" />
         </state>
       </provider>
     </entry>
