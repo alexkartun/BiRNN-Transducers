@@ -4,8 +4,12 @@
       <w>backpropagation</w>
       <w>bilstm</w>
       <w>concating</w>
+      <w>kartun</w>
       <w>lstm</w>
+      <w>ofir</w>
+      <w>pred</w>
       <w>preds</w>
+      <w>probs</w>
       <w>softmax</w>
       <w>subword</w>
       <w>tanh</w>

@@ -1,115 +1,161 @@
 import dynet as dy
-import utils as ut
 import numpy as np
-# globals of the model
+import utils as ut
+STUDENT = {'name': 'Alex Kartun_Ofir Sharon',
+           'ID': '324429216_204717664'}
+
+# model globals
 WORD_EMBED_DIM = 128
-HIDDEN_DIM = 50
+LSTM_LAYER_SIZE = 1
+HIDDEN_DIM = 64
 CHAR_EMBEDDING_DIM = 16
 SUBWORD_EMBEDDING_DIM = 128
 
 
+class BiLSTM(object):
+    """
+    1 layer BiLSTM
+    """
+    def __init__(self, in_dim, model):
+        self.builders = [
+            dy.LSTMBuilder(LSTM_LAYER_SIZE, in_dim, HIDDEN_DIM, model),
+            dy.LSTMBuilder(LSTM_LAYER_SIZE, in_dim, HIDDEN_DIM, model)
+        ]
+
+    def __call__(self, sentence):
+        forward_init, backward_init = [b.initial_state() for b in self.builders]
+        forward_output = forward_init.transduce(sentence)
+        backward_output = backward_init.transduce(reversed(sentence))
+        return [dy.concatenate([fo, bo]) for fo, bo in zip(forward_output, backward_output)]
+
+
 class FirstModel(object):
+    """
+    First model as main model that contains:
+    2 layers BiLSTM with output to mlp with 1 output layer with 'softmax' as distribution function.
+    """
     def __init__(self, w2i, t2i, i2t):
         self.w2i = w2i
         self.t2i = t2i
         self.i2t = i2t
         self.model = dy.ParameterCollection()
         self.trainer = dy.AdamTrainer(self.model)
-        self.word_embeddings = self.model.add_lookup_parameters((len(self.w2i), WORD_EMBED_DIM))
-        self.first_builder = [
-            dy.LSTMBuilder(1, WORD_EMBED_DIM, HIDDEN_DIM, self.model),
-            dy.LSTMBuilder(1, WORD_EMBED_DIM, HIDDEN_DIM, self.model)
-        ]
-        self.second_builder = [
-            dy.LSTMBuilder(1, 2 * HIDDEN_DIM, HIDDEN_DIM, self.model),
-            dy.LSTMBuilder(1, 2 * HIDDEN_DIM, HIDDEN_DIM, self.model)
-        ]
-        self.output = self.model.add_parameters((len(self.t2i), 2 * HIDDEN_DIM))
-        self.bias = self.model.add_parameters(len(self.t2i))
+        # word embedding layer
+        self.E = self.model.add_lookup_parameters((len(self.w2i), WORD_EMBED_DIM))
+        self.firstBiLSTM = BiLSTM(WORD_EMBED_DIM, self.model)
+        self.secondBiLSTM = BiLSTM(2 * HIDDEN_DIM, self.model)
+        # output mlp layer
+        self.W = self.model.add_parameters((len(self.t2i), 2 * HIDDEN_DIM))
+        self.b = self.model.add_parameters(len(self.t2i))
 
-    def build_graph(self, sentence):
-        dy.renew_cg()
-        first_forward, first_backward = [b.initial_state() for b in self.first_builder]
-        second_forward, second_backward = [b.initial_state() for b in self.second_builder]
-        embeddings = [self.word_repr(word) for word in sentence]
-        first_forward_output = first_forward.transduce(embeddings)
-        first_backward_output = first_backward.transduce(reversed(embeddings))
-        b = [dy.concatenate([fo, bo]) for fo, bo in zip(first_forward_output, first_backward_output)]
-        second_forward_output = second_forward.transduce(b)
-        second_backward_output = second_backward.transduce(reversed(b))
-        b_tag = [dy.concatenate([fo, bo]) for fo, bo in zip(second_forward_output, second_backward_output)]
-        result = [self.output * item + self.bias for item in b_tag]
-        return result
+    def __call__(self, sentence):
+        dy.renew_cg()  # create graph again
+        embeddings = [self.represent(word) for word in sentence]
+        firstBiLSTM_output = self.firstBiLSTM(embeddings)
+        secondBiLSTM_output = self.secondBiLSTM(firstBiLSTM_output)
+        return [dy.softmax(self.W * output + self.b) for output in secondBiLSTM_output]
 
-    def word_repr(self, word):
+    def represent(self, word):
+        """
+        word's embedding representation for existing word otherwise 'UNK" embedding representation
+        :param word: word to represent
+        :return: word's embedding representation
+        """
         if word in self.w2i:
-            return self.word_embeddings[self.w2i[word]]
-        return self.word_embeddings[self.w2i[ut.UNK]]
+            return self.E[self.w2i[word]]
+        return self.E[self.w2i[ut.UNK]]
 
-    def compute_sentence_loss(self, sentence, tags):
-        losses = list()
-        result = self.build_graph(sentence)
-        for res, tag in zip(result, tags):
-            loss = dy.pickneglogsoftmax(res, self.t2i[tag])
-            losses.append(loss)
-        return dy.esum(losses)
+    def compute_loss(self, sentence, tags):
+        """
+        computing loss of every word in sentence
+        :param sentence: sentence words to be predicted
+        :param tags: golden tags of the sentence
+        :return: sum of all losses
+        """
+        sentence_losses = []
+        sentence_predicted_tags = self(sentence)
+        for word_predicted_tag, gold_tag in zip(sentence_predicted_tags, tags):
+            # loss calculated -log(pred_tag, golden_tag)
+            sentence_losses.append(-dy.log(dy.pick(word_predicted_tag, self.t2i[gold_tag])))
+        return dy.esum(sentence_losses)
 
-    def predict_sentence_tags(self, sentence):
-        tags = list()
-        result = self.build_graph(sentence)
-        for res in result:
-            out = dy.softmax(res)
-            chosen = self.i2t[np.argmax(out.value())]
-            tags.append(chosen)
-        return tags
+    def compute_prediction(self, sentence):
+        """
+        computing prediction tag of every word in sentence
+        :param sentence: sentence of words to be predicted
+        :return: predicted tags of the sentence
+        """
+        sentence_tags = []
+        sentence_predicted_tags = self(sentence)
+        for word_predicted_tag in sentence_predicted_tags:
+            sentence_tags.append(self.i2t[np.argmax(word_predicted_tag.value())])
+        return sentence_tags
 
 
 class SecondModel(FirstModel):
+    """
+    Second model with char embedding representation that passed to 1 layer lstm
+    """
     def __init__(self, w2i, t2i, i2t, c2i):
-        super(SecondModel, self).__init__(w2i, t2i, i2t)
+        FirstModel.__init__(self, w2i, t2i, i2t)
         self.c2i = c2i
         self.char_embeddings = self.model.add_lookup_parameters((len(self.c2i), CHAR_EMBEDDING_DIM))
-        self.builder = dy.LSTMBuilder(1, CHAR_EMBEDDING_DIM, WORD_EMBED_DIM, self.model)
+        self.LSTMc = dy.LSTMBuilder(LSTM_LAYER_SIZE, CHAR_EMBEDDING_DIM, WORD_EMBED_DIM, self.model)
 
-    def word_repr(self, word):
-        char_indexes = [self.c2i[c] for c in word]
-        char_embeddings = [self.char_embeddings[i] for i in char_indexes]
-        lstm = self.builder.initial_state()
-        output = lstm.transduce(char_embeddings)
-        return output[-1]
+    def represent(self, word):
+        LSTMc_init_state = self.LSTMc.initial_state()
+        char_embeddings = [self.char_embeddings[self.c2i[char]] for char in word]
+        return LSTMc_init_state.transduce(char_embeddings)[-1]
 
 
 class ThirdModel(FirstModel):
+    """
+    Third model which representation is summing of suffix, prefix and word embeddings
+    """
     def __init__(self, w2i, t2i, i2t, p2i, s2i):
-        super(ThirdModel, self).__init__(w2i, t2i, i2t)
+        FirstModel.__init__(self, w2i, t2i, i2t)
         self.p2i = p2i
         self.s2i = s2i
         self.prefix_embeddings = self.model.add_lookup_parameters((len(self.p2i), SUBWORD_EMBEDDING_DIM))
         self.suffix_embeddings = self.model.add_lookup_parameters((len(self.s2i), SUBWORD_EMBEDDING_DIM))
 
-    def word_repr(self, word):
-        prefix = word[:ut.SUB_WORD_UNIT_SIZE]
-        suffix = word[-ut.SUB_WORD_UNIT_SIZE:]
-        if prefix in self.p2i:
-            prefix_index = self.p2i[prefix]
-        else:
-            prefix_index = self.p2i[ut.UNK[:ut.SUB_WORD_UNIT_SIZE]]
-        if suffix in self.s2i:
-            suffix_index = self.s2i[suffix]
-        else:
-            suffix_index = self.s2i[ut.UNK[-ut.SUB_WORD_UNIT_SIZE:]]
-        return dy.esum([self.prefix_embeddings[prefix_index], self.suffix_embeddings[suffix_index]])
+    def represent(self, word):
+        word_embedding = FirstModel.represent(self, word)
+        prefix_embedding = self.prefix_embeddings[self.p2i[self.compute_word_prefix(word)]]
+        suffix_embedding = self.suffix_embeddings[self.s2i[self.compute_word_suffix(word)]]
+        return word_embedding + prefix_embedding + suffix_embedding
+
+    def compute_word_prefix(self, word):
+        """
+        computing word prefix of word if exists otherwise prefix of 'UNK'
+        :param word: word to be checked
+        :return: prefix of the word
+        """
+        if word in self.w2i:
+            return word[:ut.SUB_WORD_UNIT_SIZE]
+        return ut.UNK[:ut.SUB_WORD_UNIT_SIZE]
+
+    def compute_word_suffix(self, word):
+        """
+        computing word suffix of word if exists otherwise suffix of 'UNK'
+        :param word: word to be checked
+        :return: suffix of the word
+        """
+        if word in self.w2i:
+            return word[-ut.SUB_WORD_UNIT_SIZE:]
+        return ut.UNK[-ut.SUB_WORD_UNIT_SIZE:]
 
 
 class FourthModel(SecondModel):
+    """
+    Fourth model which representation is concating of word and char embeddings, passed to 1 output linear layer
+    """
     def __init__(self, w2i, t2i, i2t, c2i):
-        super(FourthModel, self).__init__(w2i, t2i, i2t, c2i)
-        self.W = self.model.add_parameters((WORD_EMBED_DIM, 2 * WORD_EMBED_DIM))
-        self.b = self.model.add_parameters(WORD_EMBED_DIM)
+        SecondModel.__init__(self, w2i, t2i, i2t, c2i)
+        self.Linear = self.model.add_parameters((WORD_EMBED_DIM, 2 * WORD_EMBED_DIM))
+        self.bias = self.model.add_parameters(WORD_EMBED_DIM)
 
-    def word_repr(self, word):
-        word_embeddings = FirstModel.word_repr(self, word)
-        character_embeddings = SecondModel.word_repr(self, word)
-        concat_embeddings = dy.concatenate([word_embeddings, character_embeddings])
-        result = self.W * concat_embeddings + self.b
-        return result
+    def represent(self, word):
+        word_embeddings = FirstModel.represent(self, word)
+        char_embeddings = SecondModel.represent(self, word)
+        return self.Linear * dy.concatenate([word_embeddings, char_embeddings]) + self.bias

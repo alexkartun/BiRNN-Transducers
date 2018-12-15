@@ -4,12 +4,22 @@ import random
 import utils as ut
 import bilstmModels as bm
 
+STUDENT = {'name': 'Alex Kartun_Ofir Sharon',
+           'ID': '324429216_204717664'}
+
 # globals of the model
 EPOCHS = 5
 NUMBER_SENTENCES_CHECK_ACCURACY = 500
 
 
 def train(train_data, dev_data, model):
+    """
+    training the model and checking accuracy on dev every 500 sentences
+    :param train_data: training data
+    :param dev_data: dev data
+    :param model: BiLSTM 2 layer model with specific word embedding representation
+    :return:
+    """
     start = time.time()
     for epoch in range(EPOCHS):
         sum_of_losses = 0.0
@@ -17,8 +27,9 @@ def train(train_data, dev_data, model):
         random.shuffle(train_data)
         for index, (sentence, tags) in enumerate(train_data, 1):
             if index % NUMBER_SENTENCES_CHECK_ACCURACY == 0:
-                evaluate(dev_data, model)
-            sum_losses = model.compute_sentence_loss(sentence, tags)
+                print('dev results = accuracy: {}%'.format(compute_accuracy(dev_data, model)))
+            # computing model's errors on the sentence
+            sum_losses = model.compute_loss(sentence, tags)
             sum_of_losses += sum_losses.value()
             tagged_words += len(tags)
             sum_losses.backward()
@@ -28,32 +39,32 @@ def train(train_data, dev_data, model):
     print('total time of training: {}'.format(end - start))
 
 
-def evaluate(dev_data, model):
-    sum_of_losses = 0.0
-    tagged_words = 0.0
-    for sentence, tags in dev_data:
-        sum_losses = model.compute_sentence_loss(sentence, tags)
-        sum_of_losses += sum_losses.value()
-        tagged_words += len(tags)
-        sum_losses.backward()
-        model.trainer.update()
-    print('dev results = accuracy: {}%, average loss: {}'.format(compute_accuracy(dev_data, model),
-                                                                 sum_of_losses / tagged_words))
-
-
 def compute_accuracy(data, model):
-    correct = 0
-    tagged_words = 0.0
-    for sentence, tags in data:
-        predicted_tags = model.predict_sentence_tags(sentence)
-        for predicted_tag, gold_tag in zip(predicted_tags, tags):
+    """
+    computing accuracy of the model on data
+    :param data: data to be checked
+    :param model: trained model
+    :return:
+    """
+    good = 0.0
+    bad = 0.0
+    for sentence, sentence_gold_tags in data:
+        # computing model's predictions on the sentence
+        sentence_predicted_tags = model.compute_prediction(sentence)
+        for predicted_tag, gold_tag in zip(sentence_predicted_tags, sentence_gold_tags):
             if predicted_tag == gold_tag:
-                correct += 1
-            tagged_words += 1
-    return 100 * (correct / tagged_words)
+                good += 1
+            else:
+                bad += 1
+    return 100 * (good / (good + bad))
 
 
 def create_model(word_representation):
+    """
+    creating specific model which depends on word_representation as user's input
+    :param word_representation: user's input for word representation
+    :return: specific model
+    """
     if word_representation == 'a':
         return bm.FirstModel(ut.w2i, ut.t2i, ut.i2t)
     elif word_representation == 'b':
@@ -70,13 +81,13 @@ def main(argv):
     train_file_path = argv[1]
     dev_file_path = argv[2]
     # model_file_path = argv[3]
-    print('generating time...')
+    print('generating the data...')
     train_data = ut.generate_input_data(train_file_path)
-    dev_data = ut.generate_input_data(dev_file_path)
     ut.generate_sets_and_dicts(train_data)
+    dev_data = ut.generate_input_data(dev_file_path)
     print('creating the model...')
     model = create_model(word_representation)
-    print('training time...')
+    print('training...')
     train(train_data, dev_data, model)
 
 
