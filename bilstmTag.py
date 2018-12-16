@@ -93,7 +93,7 @@ def main(argv):
     type_of_data_set = argv[3]
     input_file_path = '{}/{}'.format(type_of_data_set, input_filename)
     model_file_path = '{}/{}_{}'.format(type_of_data_set, word_representation, model_file_name)
-    output_file_path = '{}/{}'.format(type_of_data_set, word_representation)
+    output_file_path = '{}/{}_{}'.format(type_of_data_set, word_representation, 'output')
     print('generating the data...')
     blind_data = ut.generate_validation_data(input_file_path)
     print('creating the model...')

@@ -10,6 +10,7 @@
       <w>pred</w>
       <w>preds</w>
       <w>probs</w>
+      <w>savefig</w>
       <w>softmax</w>
       <w>subword</w>
       <w>tanh</w>
