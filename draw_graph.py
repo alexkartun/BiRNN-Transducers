@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from matplotlib.legend_handler import HandlerLine2D
 import collections
 
-
 STUDENT = {'name': 'Alex Kartun_Ofir Sharon',
            'ID': '324429216_204717664'}
 
