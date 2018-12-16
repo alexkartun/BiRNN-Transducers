@@ -1,25 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="63218fc5-4822-4686-a070-02075bdf5436" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.acceptor.txt" beforeDir="false" afterPath="$PROJECT_DIR$/README.acceptor.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cross_dev" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cross_train" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/dev" beforeDir="false" afterPath="$PROJECT_DIR$/data/dev" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/m_power3_dev" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/m_power3_train" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/mul3_dev" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/mul3_train" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/train" beforeDir="false" afterPath="$PROJECT_DIR$/data/train" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen_cross_lang.py" beforeDir="false" afterPath="$PROJECT_DIR$/gen_cross_lang.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen_examples.py" beforeDir="false" afterPath="$PROJECT_DIR$/gen_examples.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen_m_power3.py" beforeDir="false" afterPath="$PROJECT_DIR$/gen_m_power3.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen_mul3_lang.py" beforeDir="false" afterPath="$PROJECT_DIR$/gen_mul3_lang.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/neg_examples" beforeDir="false" afterPath="$PROJECT_DIR$/neg_examples" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pos_examples" beforeDir="false" afterPath="$PROJECT_DIR$/pos_examples" afterDir="false" />
-    </list>
+    <list default="true" id="63218fc5-4822-4686-a070-02075bdf5436" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,29 +9,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/experiment.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="164" column="35" lean-forward="true" selection-start-line="164" selection-start-column="35" selection-end-line="164" selection-end-column="35" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/README.acceptor.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="10" column="60" selection-start-line="10" selection-start-column="60" selection-end-line="10" selection-end-column="60" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -420,18 +380,25 @@
       <option name="project" value="LOCAL" />
       <updated>1544980633285</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Done!">
+      <created>1544982224115</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1544982224115</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.64285713" visible="true" weight="0.41571194" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.64285713" weight="0.41571194" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4784226" weight="0.39934534" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -458,8 +425,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="Done!" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/Desktop/utils.py" />
-    <entry file="file://$USER_HOME$/Desktop/gen_examples.py" />
     <entry file="file://$PROJECT_DIR$/pos_examples">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -493,13 +458,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/a_output.pos" />
-    <entry file="file://$PROJECT_DIR$/README.bilstm.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="37" lean-forward="true" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="207">
@@ -617,6 +575,19 @@
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/examples_dev">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/examples_train">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.bilstm.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-221">
+          <caret line="8" column="37" lean-forward="true" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
         </state>
       </provider>
     </entry>
