@@ -6,8 +6,8 @@ STUDENT = {'name': 'Alex Kartun_Ofir Sharon',
 NUM_OF_DATA = 2000
 S_RANGE = 4
 E_RANGE = 15
-TRAIN_FILE = "data/mul3_train"
-TEST_FILE = "data/mul3_dev"
+TRAIN_FILE = "mul3_train"
+TEST_FILE = "mul3_dev"
 
 
 def get_char_sequence(character, n):

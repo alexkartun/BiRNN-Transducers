@@ -160,11 +160,8 @@ def compute_accuracy(data, model):
 
 def main(argv):
     time.sleep(1)  # wait 1 sec for dy packages to be allocated and loaded to memory
-    train_filename = argv[0]
-    dev_filename = argv[1]
-    type_of_data_set = argv[2]
-    train_file_path = '{}/{}'.format(type_of_data_set, train_filename)
-    dev_file_path = '{}/{}'.format(type_of_data_set, dev_filename)
+    train_file_path = argv[0]
+    dev_file_path = argv[1]
     print('generating the data...')
     train_data = generate_data(train_file_path)
     generate_sets_and_dicts(train_data)

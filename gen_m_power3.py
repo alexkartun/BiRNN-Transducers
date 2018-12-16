@@ -6,8 +6,8 @@ STUDENT = {'name': 'Alex Kartun_Ofir Sharon',
 NUM_OF_DATA = 2000
 S_RANGE = 4
 E_RANGE = 8
-TRAIN_FILE = "data/m_power3_train"
-TEST_FILE = "data/m_power3_dev"
+TRAIN_FILE = "m_power3_train"
+TEST_FILE = "m_power3_dev"
 
 
 def is_whole_cube(n):

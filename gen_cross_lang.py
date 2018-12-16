@@ -6,8 +6,8 @@ STUDENT = {'name': 'Alex Kartun_Ofir Sharon',
 NUM_OF_DATA = 2000
 S_RANGE = 15
 E_RANGE = 50
-TRAIN_FILE = "data/cross_train"
-TEST_FILE = "data/cross_dev"
+TRAIN_FILE = "cross_train"
+TEST_FILE = "cross_dev"
 
 
 def get_char_sequence(character, n):
